@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fire Alarm Sensor Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .data {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fire Alarm Sensor Data</h1>
+    <div class="data">Temperature: <span id="temperature">0</span> °C</div>
+    <div class="data">Gas: <span id="gas">0</span></div>
+    <div class="data">Smoke: <span id="smoke">0</span></div>
+    <div class="data">Flame: <span id="flame">0</span></div>
+  </div>
+
+  <script>
+    const ws = new WebSocket('wss://' + window.location.host);
+
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      document.getElementById('temperature').textContent = data.temperature.toFixed(1);
+      document.getElementById('gas').textContent = data.gas;
+      document.getElementById('smoke').textContent = data.smoke;
+      document.getElementById('flame').textContent = data.flame;
+    };
+
+    ws.onclose = function() {
+      console.log('WebSocket connection closed');
+    };
+
+    ws.onerror = function(error) {
+      console.log('WebSocket error:', error);
+    };
+  </script>
+</body>
+</html>
